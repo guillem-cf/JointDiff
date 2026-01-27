@@ -57,9 +57,9 @@ body {
 }
 
 .button.is-dark:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-  background: var(--primary-color) !important;
+  transform: none;
+  box-shadow: var(--shadow-sm);
+  background: var(--text-primary) !important;
 }
 
 .button.is-dark:active {
@@ -100,12 +100,12 @@ body {
 }
 
 .hero-body {
-  padding: 4rem 1.5rem;
+  padding: 3rem 1.5rem;
 }
 
 .teaser .hero-body {
-  padding-top: 2rem;
-  padding-bottom: 4rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
 }
 
 .teaser {
@@ -173,7 +173,7 @@ body {
     margin-top: 1rem;
 }
 
-.publication-authors a {
+.publication-authors a:not(.affiliation-link) {
    color: var(--primary-color) !important;
    text-decoration: none;
    font-weight: 600;
@@ -181,23 +181,35 @@ body {
    position: relative;
 }
 
-.publication-authors a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -2px;
-    left: 0;
-    background: var(--gradient-accent);
-    transition: var(--transition);
+.publication-authors a:not(.affiliation-link)::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background: var(--text-light);
+  transition: var(--transition);
 }
 
-.publication-authors a:hover::after {
-    width: 100%;
+.publication-authors a:not(.affiliation-link):hover::after {
+  width: 100%;
 }
 
-.publication-authors a:hover {
-    color: var(--primary-hover) !important;
+.publication-authors a:not(.affiliation-link):hover {
+  color: var(--primary-hover) !important;
+}
+
+.affiliation-link {
+  color: #000 !important;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 80ms linear;
+}
+
+.affiliation-link:hover {
+  color: #000 !important;
+  font-weight: 700;
 }
 
 .author-block {
@@ -212,8 +224,8 @@ body {
 }
 
 .publication-banner img:hover {
-  transform: scale(1.02);
-  box-shadow: var(--shadow-xl);
+  transform: none;
+  box-shadow: var(--shadow-lg);
 }
 
 /* Modern Video and Carousel Styling */
@@ -223,14 +235,15 @@ body {
     height: 0;
     padding-bottom: 56.25%;
     overflow: hidden;
+  margin-bottom: 1.75rem;
     border-radius: var(--border-radius-lg) !important;
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-lg);
     transition: var(--transition);
 }
 
 .publication-video:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-xl);
+    transform: none;
+    box-shadow: var(--shadow-lg);
 }
 
 .publication-video iframe {
@@ -249,8 +262,8 @@ body {
 }
 
 .publication-body img:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  transform: none;
+  box-shadow: var(--shadow-md);
 }
 
 .results-carousel {
@@ -271,8 +284,8 @@ body {
 }
 
 .results-carousel .item:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: none;
+  box-shadow: var(--shadow-md);
 }
 
 .results-carousel .item img,
@@ -324,16 +337,16 @@ body {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: var(--gradient-accent);
+  width: 56px;
+  height: 2px;
+  background: var(--text-light);
   border-radius: 2px;
 }
 
 /* Content Improvements */
 .content.has-text-justified {
-  font-size: 1.1rem;
-  line-height: 1.8;
+  font-size: 1.05rem;
+  line-height: 1.9;
   color: var(--text-secondary);
 }
 
