@@ -135,19 +135,19 @@ Evaluates the realism of the entire scene. Lower is better ($\downarrow$). *Metr
 | Method | Gen | IID | NFL SADE (yds) | NFL SFDE (yds) | Bundes SADE (m) | Bundes SFDE (m) | NBA SADE (m) | NBA SFDE (m) |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
 | **Future Generation** |  |  |  |  |  |  |  |  |
-| GroupNet$_{\textit{CVPR22}}$ | $\checkmark$ | $\checkmark$ | $4.42 / 5.33$ | $10.01 / 12.18$ | $4.78 / 5.76$ | $9.58 / 11.63$ | $2.12 / 2.84$ | $3.72 / 5.15$ |
-| AutoBots$_{\textit{ICLR22}}$ | $\times$ | $\times$ | $3.02 / 4.82$ | $6.33 / 10.68$ | $3.33 / 5.93$ | $5.57 / 11.46$ | $1.75 / 2.73$ | $2.73 / 4.71$ |
-| LED$^{IID}$$_{\textit{CVPR23}}$ | $\checkmark$ | $\checkmark$ | $3.48 / 4.12$ | $7.95 / 9.63$ | $3.89 / 4.58$ | $8.06 / 9.74$ | $1.77 / 2.30$ | $3.25 / 4.45$ |
-| LED$_{\textit{CVPR23}}$ | $\checkmark$ | $\times$ | $-$ | $-$ | $-$ | $-$ | $1.63 / 3.83$ | $2.99 / 6.03$ |
-| MART$_{\textit{ECCV24}}$ | $\times$ | $\times$ | $2.55 / 4.26$ | $5.99 / 10.31$ | $\underline{2.50} / \underline{4.16}$ | $\underline{5.06} / \underline{9.00}$ | $1.52 / 2.46$ | $2.77 / 4.78$ |
-| MoFlow$_{\textit{CVPR25}}$ | $\checkmark$ | $\times$ | $\mathbf{2.33} / 4.02$ | $\mathbf{5.51} / 9.98$ | $2.51 / 4.21$ | $5.08 / 9.24$ | $1.52 / 2.42$ | $2.73 / 4.64$ |
-| U2Diff$_{\textit{CVPR25}}$ | $\checkmark$ | $\checkmark$ | $2.59 / \underline{3.74}$ | $5.97 / \underline{9.02}$ | $2.69 / 4.21$ | $5.46 / 9.44$ | $\underline{1.48} / \underline{2.12}$ | $\underline{2.68} / \underline{4.14}$ |
+| GroupNet$_{\text{CVPR22}}$ | $\checkmark$ | $\checkmark$ | $4.42 / 5.33$ | $10.01 / 12.18$ | $4.78 / 5.76$ | $9.58 / 11.63$ | $2.12 / 2.84$ | $3.72 / 5.15$ |
+| AutoBots$_{\text{ICLR22}}$ | $\times$ | $\times$ | $3.02 / 4.82$ | $6.33 / 10.68$ | $3.33 / 5.93$ | $5.57 / 11.46$ | $1.75 / 2.73$ | $2.73 / 4.71$ |
+| LED$^{IID}$$_{\text{CVPR23}}$ | $\checkmark$ | $\checkmark$ | $3.48 / 4.12$ | $7.95 / 9.63$ | $3.89 / 4.58$ | $8.06 / 9.74$ | $1.77 / 2.30$ | $3.25 / 4.45$ |
+| LED$_{\text{CVPR23}}$ | $\checkmark$ | $\times$ | $-$ | $-$ | $-$ | $-$ | $1.63 / 3.83$ | $2.99 / 6.03$ |
+| MART$_{\text{ECCV24}}$ | $\times$ | $\times$ | $2.55 / 4.26$ | $5.99 / 10.31$ | $\underline{2.50} / \underline{4.16}$ | $\underline{5.06} / \underline{9.00}$ | $1.52 / 2.46$ | $2.77 / 4.78$ |
+| MoFlow$_{\text{CVPR25}}$ | $\checkmark$ | $\times$ | $\mathbf{2.33} / 4.02$ | $\mathbf{5.51} / 9.98$ | $2.51 / 4.21$ | $5.08 / 9.24$ | $1.52 / 2.42$ | $2.73 / 4.64$ |
+| U2Diff$_{\text{CVPR25}}$ | $\checkmark$ | $\checkmark$ | $2.59 / \underline{3.74}$ | $5.97 / \underline{9.02}$ | $2.69 / 4.21$ | $5.46 / 9.44$ | $\underline{1.48} / \underline{2.12}$ | $\underline{2.68} / \underline{4.14}$ |
 | **JointDiff (Ours)** | $\checkmark$ | $\checkmark$ | $\underline{2.36} / \textbf{3.40}$ | $\underline{5.53} / \textbf{8.40}$ | $\mathbf{2.47 / 3.66}$ | $\mathbf{5.02 / 8.29}$ | $\mathbf{1.39 / 2.01}$ | $\mathbf{2.53 / 3.95}$ |
 | \--- | \--- | \--- | \--- | \--- | \--- | \--- | \--- | \--- |
 | **Imputation** |  |  |  |  |  |  |  |  |
-| TranSPORTmer$_{\textit{ACCV24}}$ | $\times$ | $1$ | $1.27$ | $-$ | $1.45$ | $-$ | $0.71$ | $-$ |
-| Sports-Traj$_{\textit{ICLR25}}$ | $\checkmark$ | $\checkmark$ | $2.28 / 2.29$ | $-$ | $2.75 / 2.75$ | $-$ | $1.19 / 1.20$ | $-$ |
-| U2Diff$_{\textit{CVPR25}}$ | $\checkmark$ | $\checkmark$ | $\underline{0.96 / 1.19}$ | $-$ | $\underline{1.04 / 1.36}$ | $-$ | $\underline{0.62 / 0.83}$ | $-$ |
+| TranSPORTmer$_{\text{ACCV24}}$ | $\times$ | $1$ | $1.27$ | $-$ | $1.45$ | $-$ | $0.71$ | $-$ |
+| Sports-Traj$_{\text{ICLR25}}$ | $\checkmark$ | $\checkmark$ | $2.28 / 2.29$ | $-$ | $2.75 / 2.75$ | $-$ | $1.19 / 1.20$ | $-$ |
+| U2Diff$_{\text{CVPR25}}$ | $\checkmark$ | $\checkmark$ | $\underline{0.96 / 1.19}$ | $-$ | $\underline{1.04 / 1.36}$ | $-$ | $\underline{0.62 / 0.83}$ | $-$ |
 | **JointDiff (Ours)** | $\checkmark$ | $\checkmark$ | $\mathbf{0.84 / 1.03}$ | $-$ | $\mathbf{0.91 / 1.18}$ | $-$ | $\mathbf{0.57 / 0.78}$ | $-$ |
 
 ### **2\. Agent-wise Forecasting**
