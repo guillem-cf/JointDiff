@@ -40,6 +40,8 @@ pip install numpy torch matplotlib mplsoccer
 pip install transformers
 ```
 
+Download the data folder from this Google Drive (not available yet).
+
 ## **💻 Usage**
 
 ### **Quick Start**
