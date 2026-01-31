@@ -1,0 +1,8 @@
+examples/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.vscode/
+
+all_sports/*
