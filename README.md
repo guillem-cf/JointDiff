@@ -142,7 +142,7 @@ Evaluates the realism of the entire scene. Lower is better ($\downarrow$). *Metr
 | MART <sub>ECCV24</sub> | $\times$ | $\times$ | $2.55 / 4.26$ | $5.99 / 10.31$ | $\underline{2.50} / \underline{4.16}$ | $\underline{5.06} / \underline{9.00}$ | $1.52 / 2.46$ | $2.77 / 4.78$ |
 | MoFlow <sub>CVPR25</sub> | $\checkmark$ | $\times$ | $\mathbf{2.33} / 4.02$ | $\mathbf{5.51} / 9.98$ | $2.51 / 4.21$ | $5.08 / 9.24$ | $1.52 / 2.42$ | $2.73 / 4.64$ |
 | U2Diff <sub>CVPR25</sub> | $\checkmark$ | $\checkmark$ | $2.59 / \underline{3.74}$ | $5.97 / \underline{9.02}$ | $2.69 / 4.21$ | $5.46 / 9.44$ | $\underline{1.48} / \underline{2.12}$ | $\underline{2.68} / \underline{4.14}$ |
-| **JointDiff (Ours)** | $\checkmark$ | $\checkmark$ | $\underline{2.36} / \textbf{3.40}$ | $\underline{5.53} / \textbf{8.40}$ | $\mathbf{2.47 / 3.66}$ | $\mathbf{5.02 / 8.29}$ | $\mathbf{1.39 / 2.01}$ | $\mathbf{2.53 / 3.95}$ |
+| **JointDiff (Ours)** | $\checkmark$ | $\checkmark$ | $\underline{2.36} / \textbf{3.40}$ | $\underline{5.53} / \textbf{8.40}$ | $\mathbf{2.47 / 3.66}$ | $\mathbf{5.02 / 8.29}$ | **$1.39 / 2.01$** | **2.53 / 3.95$** |
 | \--- | \--- | \--- | \--- | \--- | \--- | \--- | \--- | \--- |
 | **Imputation** |  |  |  |  |  |  |  |  |
 | TranSPORTmer <sub>ACCV24</sub> | $\times$ | $1$ | $1.27$ | $-$ | $1.45$ | $-$ | $0.71$ | $-$ |
