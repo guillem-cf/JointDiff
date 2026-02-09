@@ -1,4 +1,4 @@
-# **JointDiff: A Unified Sports Trajectory Benchmark**
+# **JointDiff: Bridging Continuous and Discrete in Multi-Agent Trajectory Generation**
 
 Official repository for [**JointDiff**](https://arxiv.org/pdf/2509.22522) (acepted at ICLR 2026), containing the sports trajectory benchmark.
 
