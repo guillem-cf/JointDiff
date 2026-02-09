@@ -251,7 +251,7 @@ class AllSports(Dataset):
         if self.fut_obs is not None:
             self.trajs_attr[:, -self.fut_obs:, :, -1] = 0  # Future observation visible
             
-    def unnormalize_batch(self, trajs):
+    def unnormalize_batch(self, xy_norm):
         """Unnormalize trajectories back to metric coordinates.
 
         Accepts either:
@@ -262,18 +262,18 @@ class AllSports(Dataset):
         (x,y) are unnormalized and the rest are preserved.
         """
 
-        if torch.is_tensor(trajs):
-            xy = trajs[..., :2] * float(self.r_fact)
-            mean = torch.as_tensor(self.traj_mean, dtype=trajs.dtype, device=trajs.device)
+        if torch.is_tensor(xy_norm):
+            xy = xy_norm[..., :2] * float(self.r_fact)
+            mean = torch.as_tensor(self.traj_mean, dtype=xy_norm.dtype, device=xy_norm.device)
             xy = xy + mean
 
-            if trajs.shape[-1] > 2:
-                out = trajs.clone()
+            if xy_norm.shape[-1] > 2:
+                out = xy_norm.clone()
                 out[..., :2] = xy
                 return out
             return xy
 
-        raise TypeError(f"Unsupported trajs type: {type(trajs)}")
+        raise TypeError(f"Unsupported trajs type: {type(xy_norm)}")
 
     def __len__(self):
         return len(self.trajs)
