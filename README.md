@@ -110,19 +110,15 @@ We evaluate performance using scene-level and agent-level metrics. Since traject
 
 Evaluates the joint distribution of all agents simultaneously.
 
-* **SADE (Scene Average Displacement Error)**: The L2 distance between predicted and ground-truth positions, averaged over all agents and all time steps for the *best matching scene*.  
-* **SFDE (Scene Final Displacement Error)**: The L2 distance between predicted and ground-truth positions, averaged over all agents at the *final time step* for the best matching scene.
+* **SADE (Scene Average Displacement Error)**: The L2 distance between predicted and ground-truth positions, averaged over all agents and all time steps.  
+* **SFDE (Scene Final Displacement Error)**: The L2 distance between predicted and ground-truth positions, averaged over all agents at the *final time step*.
 
 ### **Agent Metrics (Individual Motion)**
 
 Evaluates each agent independently, ignoring global consistency.
 
-* **ADE (Average Displacement Error)**: Standard L2 error averaged over time for a single agent.  
-* **FDE (Final Displacement Error)**: Standard L2 error at the final time step for a single agent.
-
-### **Controllability**
-
-* **Accuracy (Acc)**: The percentage of generated samples that satisfy the guidance condition (e.g., did the designated player receive the pass?).
+* **ADE (Average Displacement Error)**: Standard L2 error averaged over time for each single agent.  
+* **FDE (Final Displacement Error)**: Standard L2 error at the final time step for each single agent.
 
 ---
 
@@ -139,16 +135,16 @@ Evaluates the realism of the entire scene. Lower is better ($\downarrow$). *Metr
 | AutoBots <sub>ICLR22</sub> | $\times$ | $\times$ | $3.02 / 4.82$ | $6.33 / 10.68$ | $3.33 / 5.93$ | $5.57 / 11.46$ | $1.75 / 2.73$ | $2.73 / 4.71$ |
 | LED<sup>IID</sup> <sub>CVPR23</sub> | $\checkmark$ | $\checkmark$ | $3.48 / 4.12$ | $7.95 / 9.63$ | $3.89 / 4.58$ | $8.06 / 9.74$ | $1.77 / 2.30$ | $3.25 / 4.45$ |
 | LED <sub>CVPR23</sub>| $\checkmark$ | $\times$ | $-$ | $-$ | $-$ | $-$ | $1.63 / 3.83$ | $2.99 / 6.03$ |
-| MART <sub>ECCV24</sub> | $\times$ | $\times$ | $2.55 / 4.26$ | $5.99 / 10.31$ | $\underline{2.50} / \underline{4.16}$ | $\underline{5.06} / \underline{9.00}$ | $1.52 / 2.46$ | $2.77 / 4.78$ |
-| MoFlow <sub>CVPR25</sub> | $\checkmark$ | $\times$ | $\mathbf{2.33} / 4.02$ | $\mathbf{5.51} / 9.98$ | $2.51 / 4.21$ | $5.08 / 9.24$ | $1.52 / 2.42$ | $2.73 / 4.64$ |
-| U2Diff <sub>CVPR25</sub> | $\checkmark$ | $\checkmark$ | $2.59 / \underline{3.74}$ | $5.97 / \underline{9.02}$ | $2.69 / 4.21$ | $5.46 / 9.44$ | $\underline{1.48} / \underline{2.12}$ | $\underline{2.68} / \underline{4.14}$ |
-| **JointDiff (Ours)** | $\checkmark$ | $\checkmark$ | $\underline{2.36} / \textbf{3.40}$ | $\underline{5.53} / \textbf{8.40}$ | $\mathbf{2.47 / 3.66}$ | $\mathbf{5.02 / 8.29}$ | $\mathbf{1.39 / 2.01}$ | $\mathbf{2.53 / 3.95}$ |
+| MART <sub>ECCV24</sub> | $\times$ | $\times$ | $2.55 / 4.26$ | $5.99 / 10.31$ | $2.50 / 4.16$ | $5.06$ / $9.00$ | $1.52 / 2.46$ | $2.77 / 4.78$ |
+| MoFlow <sub>CVPR25</sub> | $\checkmark$ | $\times$ | $2.33 / 4.02$ | $5.51 / 9.98$ | $2.51 / 4.21$ | $5.08 / 9.24$ | $1.52 / 2.42$ | $2.73 / 4.64$ |
+| U2Diff <sub>CVPR25</sub> | $\checkmark$ | $\checkmark$ | $2.59 / 3.74$ | $5.97 / 9.02$ | $2.69 / 4.21$ | $5.46 / 9.44$ | $1.48 / 2.12$ | $2.68 / 4.14$ |
+| **JointDiff (Ours)** | $\checkmark$ | $\checkmark$ | $2.36 / 3.40$ | $5.53 / 8.40$ | $2.47 / 3.66$ | $5.02 / 8.29$ | $1.39 / 2.01$ | $2.53 / 3.95$ |
 | \--- | \--- | \--- | \--- | \--- | \--- | \--- | \--- | \--- |
 | **Imputation** |  |  |  |  |  |  |  |  |
 | TranSPORTmer <sub>ACCV24</sub> | $\times$ | $1$ | $1.27$ | $-$ | $1.45$ | $-$ | $0.71$ | $-$ |
 | Sports-Traj <sub>ICLR25</sub> | $\checkmark$ | $\checkmark$ | $2.28 / 2.29$ | $-$ | $2.75 / 2.75$ | $-$ | $1.19 / 1.20$ | $-$ |
-| U2Diff <sub>CVPR25</sub> | $\checkmark$ | $\checkmark$ | $\underline{0.96 / 1.19}$ | $-$ | $\underline{1.04 / 1.36}$ | $-$ | $\underline{0.62 / 0.83}$ | $-$ |
-| **JointDiff (Ours)** | $\checkmark$ | $\checkmark$ | $\mathbf{0.84 / 1.03}$ | $-$ | $\mathbf{0.91 / 1.18}$ | $-$ | $\mathbf{0.57 / 0.78}$ | $-$ |
+| U2Diff <sub>CVPR25</sub> | $\checkmark$ | $\checkmark$ | $0.96 / 1.19$ | $-$ | $1.04 / 1.36$ | $-$ | $0.62 / 0.83$ | $-$ |
+| **JointDiff (Ours)** | $\checkmark$ | $\checkmark$ | $0.84 / 1.03$ | $-$ | $0.91 / 1.18$ | $-$ | $0.57 / 0.78$ | $-$ |
 
 ### **2\. Agent-wise Forecasting**
 
@@ -160,14 +156,14 @@ Standard agent-level metrics. Lower is better ($\downarrow$). *Metrics: ADE / FD
 | AutoBots | $\times$ | $1.82 / 4.82$ | $3.23 / 10.68$ | $2.07 / 5.93$ | $2.94 / 11.46$ | $1.19 / 2.73$ | $1.55 / 4.71$ |
 | LED<sup>IID</sup> <sub>CVPR23</sub> | $\checkmark$ | $1.65 / 4.12$ | $2.08 / 9.63$ | $2.06 / 4.57$ | $3.17 / 9.74$ | $0.92 / 2.30$ | $1.18 / 4.45$ |
 | LED <sub>CVPR23</sub> | $\times$ | $-$ | $-$ | $-$ | $-$ | $0.81 / 3.83$ | $1.10 / 6.03$ |
-| MART <sub>ECCV24</sub>| $\times$ | $\underline{1.07} / 4.26$ | $\underline{1.96} / 10.31$ | $\mathbf{1.41} / \underline{4.16}$ | $\mathbf{2.48} / \underline{9.00}$ | $\underline{0.72} / 2.46$ | $\underline{0.90} / 4.78$ |
-| MoFlow <sub>CVPR25</sub>| $\times$ | $\mathbf{1.03} / 4.02$ | $\mathbf{1.87} / 9.98$ | $1.47 / 4.21$ | $2.74 / 9.24$ | $\mathbf{0.71} / 2.42$ | $\mathbf{0.86} / 4.64$ |
-| U2Diff <sub>CVPR25</sub>| $\checkmark$ | $1.40 / \underline{3.74}$ | $2.67 / \underline{9.02}$ | $1.69 / 4.21$ | $3.11 / 9.44$ | $0.85 / \underline{2.12}$ | $1.11 / \underline{4.14}$ |
-| **JointDiff** | $\checkmark$ | $1.31 / \mathbf{3.40}$ | $2.49 / \mathbf{8.40}$ | $\underline{1.46} / \mathbf{3.66}$ | $\underline{2.56} / \mathbf{8.29}$ | $0.80 / \mathbf{2.01}$ | $1.09 / \mathbf{3.95}$ |
+| MART <sub>ECCV24</sub>| $\times$ | $1.07 / 4.26$ | $1.96 / 10.31$ | $1.41 / 4.16$ | $2.48 / 9.00$ | $0.72 / 2.46$ | $0.90 / 4.78$ |
+| MoFlow <sub>CVPR25</sub>| $\times$ | $1.03 / 4.02$ | $1.87 / 9.98$ | $1.47 / 4.21$ | $2.74 / 9.24$ | $0.71 / 2.42$ | $0.86 / 4.64$ |
+| U2Diff <sub>CVPR25</sub>| $\checkmark$ | $1.40 / 3.74$ | $2.67 / 9.02$ | $1.69 / 4.21$ | $3.11 / 9.44$ | $0.85 / 2.12$ | $1.11 / 4.14$ |
+| **JointDiff** | $\checkmark$ | $1.31 / 3.40$ | $2.49 / 8.40$ | $1.46 / 3.66$ | $2.56 / 8.29$ | $0.80 / 2.01$ | $1.09$ / 3.95$ |
 
 ### **3\. Controllable Generation**
 
-Evaluation of Weak-Possessor-Guidance (WPG) and Text-Guidance. *Metrics: SADE (*$\downarrow$*), SFDE (*$\downarrow$*), Accuracy (*$\uparrow$*).*
+Evaluation of Weak-Possessor-Guidance (WPG) and Text-Guidance. *Metrics: SADE (*$\downarrow$*), SFDE (*$\downarrow$*), Accuracy (*$\uparrow$*) - Reported as **min / avg** over 20 modes.*
 
 | Method | NFL SADE | NFL SFDE | NFL Acc | Bundes SADE | Bundes SFDE | Bundes Acc | NBA SADE | NBA SFDE | NBA Acc |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
