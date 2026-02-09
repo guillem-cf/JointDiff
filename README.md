@@ -1,6 +1,6 @@
 # **JointDiff: A Unified Sports Trajectory Benchmark**
 
-Official repository for **JointDiff** (**ICLR 2026**), containing the sports trajectory benchmark.
+Official repository for [**JointDiff**](https://arxiv.org/pdf/2509.22522) (acepted at ICLR 2026), containing the sports trajectory benchmark.
 
 **JointDiff** provides a **unified dataset interface and evaluation protocol** for multi-agent trajectory forecasting, imputation, and controllable generation across three major team sports: **NBA** (Basketball), **NFL** (Football), and **Bundesliga** (Soccer).
 
