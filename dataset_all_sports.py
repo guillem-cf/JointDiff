@@ -5,18 +5,28 @@ import torch
 from torch.utils.data import Dataset
 import pickle as pkl
 import json
-from transformers import T5Tokenizer, T5EncoderModel
 
-from utils import poss_processing, poss_conditioning, plot_traj
+from utils import poss_processing, poss_conditioning, plot_traj, compute_SADE_SFDE, compute_ADE_FDE, min_max_acc_poss
 
 
 class AllSports(Dataset):
     """Dataloader for the Sports Trajectory datasets"""
     def __init__(
-        self, name_sport, split_name, obs_len=10, poss_trsh=1.5, guidance='guidposs', captions=False, llm='T5-base', fut_obs=None, device='cuda', text_embeddings=True, data_root=None,
+        self, name_sport, split_name, obs_len=10, poss_trsh=1.5, guidance='guidposs', captions=False, llm='T5-base', fut_obs=None, device='cuda', text_embeddings=False, data_root=None,
     ):
         """
         Args:
+            name_sport (str): Sport identifier. One of 'nba', 'nfl', 'bundes'.
+            split_name (str): Dataset split. One of 'train', 'test'.
+            obs_len (int): Number of observed (input) frames.
+            poss_trsh (float): Distance threshold (in meters) for ball-possession assignment.
+            guidance (str): Possession guidance mode. Default 'guidposs'.
+            captions (bool): Whether to load text captions (NFL & Bundesliga only).
+            llm (str): HuggingFace model id for text embeddings (e.g. 'T5-base').
+            fut_obs (int or None): If 1, last frame is visible (imputation task). None for forecasting.
+            device (str): Device for text-embedding computation ('cuda' or 'cpu').
+            text_embeddings (bool): If True, pre-compute T5 embeddings for captions.
+            data_root (str or None): Path to the 'all_sports' data folder. Auto-detected if None.
         """
         super(AllSports, self).__init__()
 
@@ -99,13 +109,19 @@ class AllSports(Dataset):
         
     def generate_text_embeddings(self, captions, llm='T5-base', device='cuda'):
         """Generate text embeddings for the dataset"""
+        try:
+            from transformers import T5Tokenizer, T5EncoderModel
+        except ImportError:
+            raise ImportError(
+                "The 'transformers' library is required for text embeddings. "
+                "Install it with: pip install transformers"
+            )
         captions = Path(captions)
         if not captions.exists():
             raise FileNotFoundError(f"Captions file not found at {captions}")
         # Upload jsons
         with open(captions, 'r') as f:
             captions_json = json.load(f)
-        f.close()
         
         assert len(captions_json) == len(self.labels), "Captions length does not match trajectories length"
         
@@ -197,7 +213,6 @@ class AllSports(Dataset):
         """Process the NFL dataset"""
         with open(data_root, 'rb') as f:
             self.trajs = pkl.load(f)
-        f.close()
         
         # Normalize the trajectories
         court_dims = np.array([120, 53.3])  # Football field is 120x53.3 yards
@@ -206,7 +221,7 @@ class AllSports(Dataset):
         self.trajs = (self.trajs - self.traj_mean) / self.r_fact  # bound to [-1, 1]
         
         # From numpy to torch
-        self.trajs = torch.from_numpy(self.trajs).type(torch.float64)
+        self.trajs = torch.from_numpy(self.trajs).type(torch.float)
         
         # Add attributes
         self.trajs_attr = torch.zeros_like(self.trajs[:, :, :, :1]).repeat(1, 1, 1, 3)
@@ -230,7 +245,7 @@ class AllSports(Dataset):
         self.traj_mean = np.array([0, 0])  # Center of the field
         
         # From numpy to torch
-        self.trajs = torch.from_numpy(self.trajs).type(torch.float64)
+        self.trajs = torch.from_numpy(self.trajs).type(torch.float)
         
         if split_name == 'train' and augmentation:
             # assert captions is False, "Captions not supported for Bundesliga dataset"
@@ -293,66 +308,75 @@ class AllSports(Dataset):
 
 if __name__ == "__main__":
     
-    data_root = Path(__file__).resolve().parent / 'all_sports'
+    # data_root = Path(__file__).resolve().parent / 'all_sports'
     save_path = Path(__file__).resolve().parent / 'examples'
     # Create output directory if it doesn't exist
     save_path.mkdir(parents=True, exist_ok=True)
     
-    dataset = AllSports(
-		name_sport='nba',
-		split_name='test',
-		obs_len=10,
-		poss_trsh=1.5,
-		guidance='guidposs',
-		captions=False,
-		text_embeddings=False,
-		device='cpu',
-		data_root=str(data_root),
-	)
-    
-    plot_traj(dataset, index=7,
-            save_path=str(save_path / "output_nba.png"),
-            mp4_path=str(save_path / "output_nba.mp4"),
-            # gif_path=str(save_path / "nba.gif"),
-            fps=5,
-            show=False)
+    idx = {'nba': 7, 'bundes': 0, 'nfl': 3}  # Example indices for visualization
     
     
-    dataset = AllSports(
-		name_sport='bundes',
-		split_name='test',
-		obs_len=10,
-		poss_trsh=1.5,
-		guidance='guidposs',
-		captions=True,
-		text_embeddings=False,
-		device='cpu',
-		data_root=str(data_root),
-	)
+    for name_sport in ['nba', 'nfl', 'bundes']:
+        print(f"\n################ {name_sport.upper()} ################")
+        captions = True if name_sport in ['nfl', 'bundes'] else False
+        dataset = AllSports(
+            name_sport=name_sport,
+            split_name='test',
+            obs_len=10,
+            fut_obs=None,   # Set fut_obs=1 for imputation task (last frame visible), None for forecasting
+            captions=captions,
+            text_embeddings=False,
+        )
+
+        plot_traj(dataset, index=idx[name_sport],
+                save_path=str(save_path / f"output_{name_sport}.png"),
+                mp4_path=str(save_path / f"output_{name_sport}.mp4"),
+                # gif_path=str(save_path / f"output_{name_sport}.gif"),
+                fps=5,
+                show=False)
     
-    plot_traj(dataset, index=0,
-            save_path=str(save_path / "output_bundes.png"),
-            mp4_path=str(save_path / "output_bundes.mp4"),
-            # gif_path=str(save_path / "bundes.gif"),
-            fps=6.25,
-            show=False)
-    
-    
-    dataset = AllSports(
-		name_sport='nfl',
-		split_name='test',
-		obs_len=10,
-		poss_trsh=1.5,
-		guidance='guidposs',
-		captions=True,
-		text_embeddings=False,
-		device='cpu',
-		data_root=str(data_root),
-	)
-    
-    plot_traj(dataset, index=3,
-            save_path=str(save_path / "output_nfl.png"),
-            mp4_path=str(save_path / "output_nfl.mp4"),
-            # gif_path=str(save_path / "nfl.gif"),
-            fps=10,
-            show=False)
+        dataloader = torch.utils.data.DataLoader(dataset, batch_size=16, shuffle=False)
+
+        metrics = {}
+        for n, data in enumerate(dataloader):
+            agents_in, agents_out, labels = data
+            
+            if n == 0:
+                print("Agents in shape:", agents_in.shape)  # dummy tensor with shape [B, 0, N, D]
+                print("Agents out shape:", agents_out.shape)
+                print("Labels keys:", labels.keys())
+            
+            gt_xy = agents_out[..., :2]   # [B, T, N, 2]
+            gt_poss = labels['poss_idx']  # [B, T]
+            mask = agents_out[..., -1]    # [B, T, N] where 0 indicates input and 1 indicates output
+            
+            # Model prediction
+            # pred_xy, pred_poss = model(gt_xy, mask, labels)
+            pred_xy = gt_xy.clone().unsqueeze(1).repeat(1, 20, 1, 1, 1)  # [B, modes, T, N, 2] where we create 20 identical modes for testing
+            pred_xy = pred_xy + torch.randn_like(pred_xy) * 0.1  # Add noise for testing
+            pred_poss = gt_poss.clone().unsqueeze(1).repeat(1, 20, 1)  # [B, modes, T] where we create 20 identical modes for testing
+            pred_poss = torch.randint(0, gt_poss.max()+1, pred_poss.shape)
+            
+            # Unnormalize trajectories back to metric coordinates
+            gt_xy = dataset.unnormalize_batch(gt_xy)  # [B, T, N, 2]
+            pred_xy = dataset.unnormalize_batch(pred_xy)  # [B, modes, T, N, 2]
+            norm = torch.norm(pred_xy - gt_xy.unsqueeze(1), dim=-1)  # [B, modes, T, N]
+            
+            # Compute metrics
+            scene_metrics = compute_SADE_SFDE(norm, mask)
+            individual_metrics = compute_ADE_FDE(norm, mask)
+            possessor_metrics = min_max_acc_poss(pred_poss, gt_poss, mask[..., 0])
+            batch_metrics = {**scene_metrics, **individual_metrics, **possessor_metrics}
+            
+            if metrics == {}:
+                metrics = {key: [] for key in batch_metrics.keys()}
+            for key in metrics.keys():
+                metrics[key].append(batch_metrics[key])
+
+        # Average metrics over batches
+        for key in metrics.keys():
+            metrics[key] = torch.cat(metrics[key], dim=0).mean().item()
+        
+        print(f"\nMetrics on {name_sport.upper()} test set:")
+        for key, value in metrics.items():
+            print(f"{key}: {value:.4f}")

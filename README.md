@@ -1,6 +1,6 @@
 # **JointDiff: Bridging Continuous and Discrete in Multi-Agent Trajectory Generation**
 
-Official repository for [**JointDiff**](https://arxiv.org/pdf/2509.22522) (acepted at ICLR 2026), containing the sports trajectory benchmark.
+Official repository for [**JointDiff**](https://arxiv.org/pdf/2509.22522) (accepted at ICLR 2026), containing the sports trajectory benchmark.
 
 **JointDiff** provides a **unified dataset interface and evaluation protocol** for multi-agent trajectory forecasting, imputation, and controllable generation across three major team sports: **NBA** (Basketball), **NFL** (Football), and **Bundesliga** (Soccer).
 
@@ -20,11 +20,13 @@ We unify three public tracking datasets. All data is exposed through a single Al
 
 | Dataset | Sport | Source | Scenes (Train / Test) | Duration | Resolution (FPS) | Agents |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| **NBA** | Basketball | [SportVU](https://github.com/linouk23/NBA-Player-Movements) | 32.5k / 12k | 6.0s | 5 (T=30) | 11 |
+| **NBA** | Basketball | [SportVU](https://github.com/linouk23/NBA-Player-Movements) | 32.5k / 12.5k | 6.0s | 5 (T=30) | 11 |
 | **NFL** | Football | [Big Data Bowl](https://github.com/nfl-football-ops/Big-Data-Bowl) | 10.8k / 2.6k | 5.0s | 10 (T=50) | 23 |
 | **Bundesliga** | Soccer | [IDSSE](https://github.com/spoho-datascience/idsse-data) | 2.1k / 524 | 6.4s | 6.25 (T=40) | 23 |
 
 **Note:** NFL and Bundesliga scenes are augmented with **natural-language captions** to support text-guided generation.
+
+**Note:** Bundesliga training data is automatically augmented at load time (2× via coordinate flipping). The provided caption files are pre-prepared to match the augmented set size.
 
 ## **📦 Installation**
 
@@ -48,7 +50,7 @@ Download the data folder from this [drive](https://drive.google.com/drive/folder
 
 Load any of the three sports using the unified AllSports interface.
 
-```bash
+```python
 from dataset_all_sports import AllSports
 
 # Initialize dataset
@@ -58,13 +60,17 @@ ds = AllSports(
     obs_len=10,            # Frames used for observation
     fut_obs=None,          # Set specific length for imputation (e.g., fut_obs=1)
     captions=True,         # Enable text annotations (NFL & Bundes only)
-    text_embeddings=False, # Set True to return pre-computed T5 embeddings
+    text_embeddings=False, # Set True to pre-compute T5 embeddings for captions (default: False)
 )
 
 # Fetch a sample
-# agents_in: Dummy
-# agents_out: Ground truth scene
-# labels: Metadata (including captions if enabled)
+# agents_in: Empty placeholder tensor (shape [0, N, D]), reserved for future use
+# agents_out: Ground truth scene (shape [T, N, D])
+#   - agents_out[..., :2]  -> (x, y) normalized coordinates
+#   - agents_out[..., 2]   -> team indicator (0=ball, 1=player)
+#   - agents_out[..., 3]   -> validity flag (1=valid)
+#   - agents_out[..., 4]   -> prediction mask (0=observed, 1=to predict)
+# labels: Metadata dict (poss_idx, high_cond, and caption_text if enabled)
 agents_in, agents_out, labels = ds[0]
 
 print(f"Output Shape: {agents_out.shape}")
@@ -73,17 +79,35 @@ print(f"Available Labels: {labels.keys()}")
 # --- Normalization ---
 # The dataset returns normalized coordinates for stable training.
 xy_norm = agents_out[..., :2]
+mask = agents_out[..., -1]     # 0 = observed frame, 1 = frame to predict
 
-# To revert to real-world units (Meters or Yards), use batch_unnorm:
-xy_unnorm = ds.batch_unnorm(xy_norm)
+# To revert to real-world units (Meters or Yards), use unnormalize_batch:
+xy_unnorm = ds.unnormalize_batch(xy_norm)
 ```
 
-### **Visualization**
+### **Visualization and Metrics Computation**
 
-To visualize trajectories, we provide a helper script. Ensure ffmpeg is installed on your system.
+We provide a helper script that both visualizes sample trajectories and computes all benchmark metrics on the test set. Ensure `ffmpeg` is installed for video output.
 
 ```bash
 python dataset_all_sports.py
+```
+
+This script iterates over all three sports, saves static plots and MP4 animations to an `examples/` folder, and prints metrics in the following format:
+
+```
+Metrics on {dataset} test set:
+sade_min: X.XXXX
+sfde_min: X.XXXX
+sade_avg: X.XXXX
+sfde_avg: X.XXXX
+ade_min: X.XXXX
+fde_min: X.XXXX
+ade_avg: X.XXXX
+fde_avg: X.XXXX
+acc_min: X.XXXX
+acc_max: X.XXXX
+acc_mean: X.XXXX
 ```
 
 #### **Qualitative Examples**
@@ -106,6 +130,12 @@ python dataset_all_sports.py
 
 We evaluate performance using scene-level and agent-level metrics. Since trajectory generation is stochastic, we report **min** (best of $K$) and **avg** (average of $K$) metrics, where $K=20$.
 
+All metric functions are implemented in [`utils.py`](utils.py). In particular:
+
+* `compute_SADE_SFDE(norm, mask)` — Scene-level metrics (see below).
+* `compute_ADE_FDE(norm, mask)` — Agent-level metrics (see below).
+* `min_max_acc_poss(pred, gt, mask)` — Possessor accuracy metric.
+
 ### **Scene Metrics (Global Coherence)**
 
 Evaluates the joint distribution of all agents simultaneously.
@@ -119,6 +149,12 @@ Evaluates each agent independently, ignoring global consistency.
 
 * **ADE (Average Displacement Error)**: Standard L2 error averaged over time for each single agent.  
 * **FDE (Final Displacement Error)**: Standard L2 error at the final time step for each single agent.
+
+### **Possessor Event Metric**
+
+Evaluates the generated possessor sequence.
+
+* **Acc (Accuracy)**: Accuracy of the predicted possessor averaged over time.
 
 ---
 
@@ -148,7 +184,7 @@ Evaluates the realism of the entire scene. Lower is better ($\downarrow$). *Metr
 
 ### **2\. Agent-wise Forecasting**
 
-Standard agent-level metrics. Lower is better ($\downarrow$). *Metrics: ADE / FDE \- Reported as **min / avg** over 20 modes.*
+Standard agent-level metrics. Lower is better ($\downarrow$). *Metrics: ADE / FDE \- Reported as **min / avg** over 20 modes.* 
 
 | Method | IID | NFL ADE (yds) | NFL FDE (yds) | Bundes ADE (m) | Bundes FDE (m) | NBA ADE (m) | NBA FDE (m) |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |

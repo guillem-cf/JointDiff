@@ -1,8 +1,18 @@
 examples/
 __pycache__/
 *.pyc
+*.pyo
 .DS_Store
 .env
 .vscode/
 
+# Data files (download separately — see README)
 all_sports/*
+!all_sports/.gitkeep
+
+# Common ML artifacts
+*.pt
+*.pth
+*.ckpt
+wandb/
+runs/
