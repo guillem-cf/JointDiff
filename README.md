@@ -130,11 +130,11 @@ acc_mean: X.XXXX
 
 We evaluate performance using scene-level and agent-level metrics. Since trajectory generation is stochastic, we report **min** (best of $K$) and **avg** (average of $K$) metrics, where $K=20$.
 
-All metric functions are implemented in [`utils.py`](utils.py). In particular:
+All metric functions are implemented in [`metrics.py`](metrics.py). In particular:
 
 * `compute_SADE_SFDE(norm, mask)` — Scene-level metrics (see below).
 * `compute_ADE_FDE(norm, mask)` — Agent-level metrics (see below).
-* `min_max_acc_poss(pred, gt, mask)` — Possessor accuracy metric.
+* `compute_ACC(pred, gt, mask)` — Possessor accuracy metric.
 
 ### **Scene Metrics (Global Coherence)**
 

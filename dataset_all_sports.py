@@ -6,7 +6,8 @@ from torch.utils.data import Dataset
 import pickle as pkl
 import json
 
-from utils import poss_processing, poss_conditioning, plot_traj, compute_SADE_SFDE, compute_ADE_FDE, min_max_acc_poss
+from utils import poss_processing, poss_conditioning, plot_traj
+from metrics import compute_SADE_SFDE, compute_ADE_FDE, compute_ACC
 
 
 class AllSports(Dataset):
@@ -365,7 +366,7 @@ if __name__ == "__main__":
             # Compute metrics
             scene_metrics = compute_SADE_SFDE(norm, mask)
             individual_metrics = compute_ADE_FDE(norm, mask)
-            possessor_metrics = min_max_acc_poss(pred_poss, gt_poss, mask[..., 0])
+            possessor_metrics = compute_ACC(pred_poss, gt_poss, mask[..., 0])
             batch_metrics = {**scene_metrics, **individual_metrics, **possessor_metrics}
             
             if metrics == {}:
