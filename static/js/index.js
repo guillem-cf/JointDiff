@@ -119,6 +119,215 @@ function setupVideoCarouselAutoplay() {
     });
 }
 
+// ── Scrollytelling ──────────────────────────────────────
+// Configure your slides here. Order determines scroll order.
+// type: 'pdf' for static PDF slides, 'img' for GIF/PNG/JPG images.
+var SLIDES = [
+  { src: 'static/slides/01-intro.gif', type: 'img' },
+  { src: 'static/slides/02-motivation.gif', type: 'img' },
+  { src: 'static/slides/03-framework.pdf', type: 'pdf' },
+  { src: 'static/slides/04-denoiser.pdf', type: 'pdf' },
+  { src: 'static/slides/05-crossguid.pdf', type: 'pdf' },
+  { src: 'static/slides/06-futuregen.pdf', type: 'pdf' },
+  { src: 'static/slides/07-controlgen.pdf', type: 'pdf' },
+  // { src: 'static/slides/08-text-guidance.pdf', type: 'pdf' },
+  // { src: 'static/slides/09-results.gif', type: 'img' },
+  // { src: 'static/slides/10-qualitative.gif', type: 'img' },
+  // { src: 'static/slides/11-ablation.pdf', type: 'pdf' },
+  // { src: 'static/slides/12-conclusion.pdf', type: 'pdf' }
+];
+
+// PDF.js worker setup
+if (typeof pdfjsLib !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+function renderPdfToCanvas(canvas, url) {
+  if (canvas.dataset.rendered) return Promise.resolve();
+  canvas.dataset.rendered = 'true';
+  return pdfjsLib.getDocument(url).promise.then(function(pdf) {
+    return pdf.getPage(1);
+  }).then(function(page) {
+    var scale = 2;
+    var viewport = page.getViewport({ scale: scale });
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    return page.render({
+      canvasContext: canvas.getContext('2d'),
+      viewport: viewport
+    }).promise;
+  }).catch(function(err) {
+    console.warn('PDF render failed for ' + url + ':', err);
+  });
+}
+
+function initScrollytelling() {
+  var container = document.getElementById('scrollytelling');
+  if (!container || SLIDES.length === 0) return;
+
+  var stack = document.getElementById('scrollytelling-stack');
+  var dotsContainer = document.getElementById('scrollytelling-dots');
+  var spacersContainer = document.getElementById('scrollytelling-spacers');
+  var progressTotal = container.querySelector('.scrollytelling__progress-total');
+  var progressCurrent = container.querySelector('.scrollytelling__progress-current');
+
+  // Set total
+  if (progressTotal) progressTotal.textContent = SLIDES.length;
+
+  // Build slide elements, dots, and spacers
+  var slideElements = [];
+  SLIDES.forEach(function(slide, i) {
+    var num = i + 1;
+    var el;
+
+    if (slide.type === 'pdf') {
+      el = document.createElement('canvas');
+      el.className = 'scrollytelling__slide' + (i === 0 ? ' scrollytelling__slide--active' : '');
+      el.dataset.slide = num;
+      el.dataset.pdf = slide.src;
+    } else {
+      el = document.createElement('img');
+      el.className = 'scrollytelling__slide' + (i === 0 ? ' scrollytelling__slide--active' : '');
+      el.dataset.slide = num;
+      el.alt = 'Slide ' + num;
+      if (i === 0) {
+        el.src = slide.src;
+      } else {
+        el.dataset.src = slide.src;
+        el.loading = 'lazy';
+      }
+    }
+
+    stack.appendChild(el);
+    slideElements.push(el);
+
+    // Dot
+    var dot = document.createElement('button');
+    dot.className = 'scrollytelling__dot' + (i === 0 ? ' scrollytelling__dot--active' : '');
+    dot.dataset.slide = num;
+    dot.setAttribute('aria-label', 'Go to slide ' + num);
+    dotsContainer.appendChild(dot);
+
+    // Spacer
+    var spacer = document.createElement('div');
+    spacer.className = 'scrollytelling__spacer';
+    spacer.dataset.step = num;
+    spacersContainer.appendChild(spacer);
+  });
+
+  // Render first PDF slide immediately
+  if (SLIDES[0].type === 'pdf') {
+    renderPdfToCanvas(slideElements[0], SLIDES[0].src);
+  }
+
+  var currentStep = 1;
+  var allDots = dotsContainer.querySelectorAll('.scrollytelling__dot');
+  var allSpacers = spacersContainer.querySelectorAll('.scrollytelling__spacer');
+
+  function activateStep(stepNum) {
+    if (stepNum === currentStep) return;
+    currentStep = stepNum;
+
+    // Crossfade slides
+    slideElements.forEach(function(el, i) {
+      var isTarget = (i + 1) === stepNum;
+      el.classList.toggle('scrollytelling__slide--active', isTarget);
+    });
+
+    // Update dots
+    allDots.forEach(function(dot) {
+      dot.classList.toggle('scrollytelling__dot--active',
+        parseInt(dot.dataset.slide, 10) === stepNum);
+    });
+
+    // Update progress
+    if (progressCurrent) progressCurrent.textContent = stepNum;
+
+    // Lazy load current and adjacent slides
+    [stepNum - 2, stepNum - 1, stepNum, stepNum + 1].forEach(function(n) {
+      var idx = n - 1;
+      if (idx < 0 || idx >= SLIDES.length) return;
+      var el = slideElements[idx];
+      var slide = SLIDES[idx];
+
+      if (slide.type === 'pdf') {
+        renderPdfToCanvas(el, slide.src);
+      } else if (el.dataset.src) {
+        el.src = el.dataset.src;
+        delete el.dataset.src;
+      }
+    });
+  }
+
+  // IntersectionObserver for spacers
+  var stepObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var stepNum = parseInt(entry.target.dataset.step, 10);
+        activateStep(stepNum);
+      }
+    });
+  }, {
+    rootMargin: '-40% 0px -40% 0px',
+    threshold: 0
+  });
+
+  allSpacers.forEach(function(spacer) {
+    stepObserver.observe(spacer);
+  });
+
+  // Dot click navigation
+  allDots.forEach(function(dot) {
+    dot.addEventListener('click', function() {
+      var stepNum = parseInt(dot.dataset.slide, 10);
+      var targetSpacer = spacersContainer.querySelector(
+        '[data-step="' + stepNum + '"]'
+      );
+      if (targetSpacer) {
+        targetSpacer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+}
+
+function initPresentationModal() {
+  var playBtn = document.getElementById('play-presentation-btn');
+  var modal = document.getElementById('presentation-modal');
+  if (!playBtn || !modal) return;
+
+  var video = document.getElementById('presentation-video');
+  var backdrop = modal.querySelector('.scrollytelling__video-modal-backdrop');
+  var closeBtn = modal.querySelector('.scrollytelling__video-close');
+
+  function openModal(e) {
+    e.preventDefault();
+    modal.classList.add('is-active');
+    document.body.style.overflow = 'hidden';
+    if (video) video.play();
+  }
+
+  function closeModal() {
+    modal.classList.remove('is-active');
+    document.body.style.overflow = '';
+    if (video) video.pause();
+  }
+
+  playBtn.addEventListener('click', openModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (backdrop) backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('is-active')) {
+      closeModal();
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  initScrollytelling();
+  initPresentationModal();
+});
+
 $(document).ready(function() {
     // Check for click events on the navbar burger icon
 

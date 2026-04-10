@@ -49,6 +49,7 @@
   <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
   <script defer src="static/js/bulma-carousel.min.js"></script>
@@ -194,6 +195,56 @@
     </div>
   </section>
 
+  <section class="section" id="method-overview">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Method Overview</h2>
+          <!--
+          <p class="subtitle has-text-centered" style="color: var(--text-secondary); margin-bottom: 2rem;">
+            Scroll to explore how JointDiff works, or
+            <a href="#" id="play-presentation-btn" class="has-text-weight-semibold" style="color: var(--primary-color);">
+              <i class="fas fa-play-circle"></i> watch the narrated presentation
+            </a>
+          </p>
+          -->
+        </div>
+      </div>
+    </div>
+
+    <div class="scrollytelling" id="scrollytelling">
+      <div class="scrollytelling__visual">
+        <div class="scrollytelling__progress">
+          <span class="scrollytelling__progress-current">1</span>
+          <span class="scrollytelling__progress-separator">/</span>
+          <span class="scrollytelling__progress-total"></span>
+        </div>
+        <div class="scrollytelling__image-stack" id="scrollytelling-stack">
+          <!-- Slides are dynamically generated from the SLIDES config in index.js -->
+        </div>
+        <div class="scrollytelling__dots" id="scrollytelling-dots">
+          <!-- Dots are dynamically generated -->
+        </div>
+      </div>
+      <div class="scrollytelling__spacers" id="scrollytelling-spacers">
+        <!-- Spacers are dynamically generated -->
+      </div>
+    </div>
+
+    <!-- Video modal -->
+    <div class="scrollytelling__video-modal" id="presentation-modal">
+      <div class="scrollytelling__video-modal-backdrop"></div>
+      <div class="scrollytelling__video-modal-content">
+        <button class="scrollytelling__video-close" aria-label="Close video">
+          <i class="fas fa-times"></i>
+        </button>
+        <video id="presentation-video" controls preload="none">
+          <source src="static/videos/presentation.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="BibTeX">
     <div class="container is-max-desktop content">
       <h2 class="title">BibTeX</h2>
@@ -205,6 +256,8 @@
 }</code></pre>
     </div>
   </section>
+
+  </main>
 
   <footer class="footer">
     <div class="container">
