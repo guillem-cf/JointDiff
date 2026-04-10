@@ -291,41 +291,8 @@ function initScrollytelling() {
   });
 }
 
-function initPresentationModal() {
-  var playBtn = document.getElementById('play-presentation-btn');
-  var modal = document.getElementById('presentation-modal');
-  if (!playBtn || !modal) return;
-
-  var video = document.getElementById('presentation-video');
-  var backdrop = modal.querySelector('.scrollytelling__video-modal-backdrop');
-  var closeBtn = modal.querySelector('.scrollytelling__video-close');
-
-  function openModal(e) {
-    e.preventDefault();
-    modal.classList.add('is-active');
-    document.body.style.overflow = 'hidden';
-    if (video) video.play();
-  }
-
-  function closeModal() {
-    modal.classList.remove('is-active');
-    document.body.style.overflow = '';
-    if (video) video.pause();
-  }
-
-  playBtn.addEventListener('click', openModal);
-  if (closeBtn) closeBtn.addEventListener('click', closeModal);
-  if (backdrop) backdrop.addEventListener('click', closeModal);
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && modal.classList.contains('is-active')) {
-      closeModal();
-    }
-  });
-}
-
 document.addEventListener('DOMContentLoaded', function() {
   initScrollytelling();
-  initPresentationModal();
 });
 
 $(document).ready(function() {
