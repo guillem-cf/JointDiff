@@ -135,7 +135,11 @@
                 <sup>3</sup>Institut de Robòtica i Informàtica Industrial (CSIC-UPC)
               </span>
               <br>
-              <a href="https://iclr.cc/virtual/2026/poster/10011354" class="affiliation-link"><strong class="is-size-3 is-uppercase has-text-grey-dark">ICLR 2026</strong></a>
+              <a href="https://iclr.cc/virtual/2026/poster/10011354" class="venue-badge">
+                <span class="venue-badge__dot"></span>
+                <span class="venue-badge__label">ICLR 2026</span>
+                <span class="venue-badge__sub">Poster</span>
+              </a>
             </div>
 
             <div class="column has-text-centered">
@@ -175,10 +179,7 @@
   <section class="hero teaser">
     <div class="container is-max-desktop">
       <div class="hero-body">
-        <div class="publication-video">
-          <iframe src="https://www.youtube.com/embed/J1hzCha6u_s?autoplay=1&mute=1&loop=1&playlist=J1hzCha6u_s&vq=hd1080&rel=0" 
-                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
+        <img src="static/slides/00-demo.gif" alt="JointDiff key result demo" class="demo-gif" style="width:100%; border-radius:10px; margin-bottom:1.5rem;">
         <h2 class="subtitle has-text-centered">
           JointDiff simultaneously generates multi-agent trajectories and synchronous discrete events, enabling high-level semantic control through natural language and player possession sequences.
         </h2>
@@ -193,10 +194,24 @@
           <h2 class="title is-3">Abstract</h2>
           <div class="content has-text-justified">
             <p>
-              Generative models often treat continuous data and discrete events as separate processes, creating a gap in modeling complex systems where they interact synchronously. To bridge this gap, we introduce <strong>JointDiff</strong>, a novel diffusion framework designed to unify these two processes by simultaneously generating continuous spatio-temporal data and synchronous discrete events. We demonstrate its efficacy in the sports domain by simultaneously modeling multi-agent trajectories and key possession events. This joint modeling is validated with non-controllable generation and two novel controllable generation scenarios: <strong>weak-possessor-guidance</strong>, which offers flexible semantic control over game dynamics through a simple list of intended ball possessors, and <strong>text-guidance</strong>, which enables fine-grained, language-driven generation. To enable the conditioning with these guidance signals, we introduce <strong>CrossGuid</strong>, an effective conditioning operation for multi-agent domains. 
+              Generative models often treat continuous data and discrete events as separate processes, creating a gap in modeling complex systems where they interact synchronously. To bridge this gap, we introduce <strong>JointDiff</strong>, a novel diffusion framework designed to unify these two processes by simultaneously generating continuous spatio-temporal data and synchronous discrete events. We demonstrate its efficacy in the sports domain by simultaneously modeling multi-agent trajectories and key possession events. This joint modeling is validated with non-controllable generation and two novel controllable generation scenarios: <strong>weak-possessor-guidance</strong>, which offers flexible semantic control over game dynamics through a simple list of intended ball possessors, and <strong>text-guidance</strong>, which enables fine-grained, language-driven generation. To enable the conditioning with these guidance signals, we introduce <strong>CrossGuid</strong>, an effective conditioning operation for multi-agent domains.
             </p>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="promo-video">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Promo Video</h2>
+        </div>
+      </div>
+      <div class="publication-video">
+        <iframe src="https://www.youtube.com/embed/J1hzCha6u_s?autoplay=1&mute=1&loop=1&playlist=J1hzCha6u_s&vq=hd1080&rel=0"
+                frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
     </div>
   </section>
@@ -229,6 +244,46 @@
       </div>
     </div>
 
+  </section>
+
+  <section class="section" id="results" style="display:none;">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Results</h2>
+          <div class="content has-text-justified">
+            <p>Qualitative and quantitative results showcasing JointDiff's performance across generation scenarios. <em>[Placeholder — add image/video carousels here.]</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-centered">
+        <div class="column">
+          <figure class="image" style="background:#eee; border-radius:10px; aspect-ratio: 16/9; display:flex; align-items:center; justify-content:center;">
+            <span class="has-text-grey">Results media placeholder 1</span>
+          </figure>
+        </div>
+        <div class="column">
+          <figure class="image" style="background:#eee; border-radius:10px; aspect-ratio: 16/9; display:flex; align-items:center; justify-content:center;">
+            <span class="has-text-grey">Results media placeholder 2</span>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="narrated-presentation">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Full Talk</h2>
+        </div>
+      </div>
+      <div class="publication-video">
+        <iframe src="https://www.youtube.com/embed/5icsu_AAL8I?rel=0"
+                frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </div>
   </section>
 
   <section class="section" id="BibTeX">
